@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice Test 13</title>
+<style>
+  :root {
+    --ink: #1b2a41;
+    --ink-soft: #55627a;
+    --line: #d8dde6;
+    --paper: #ffffff;
+    --field: #f3f5f8;
+    --pitch: #2e7d4f;
+    --pitch-deep: #23603c;
+    --correct: #1e8e5a;
+    --wrong: #c43d3d;
+    --correct-bg: #e6f5ec;
+    --wrong-bg: #fbe9e9;
+    --amber: #b8860b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--field); color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size: 17px; line-height: 1.5; }
+
+  header {
+    background: var(--ink); color: #fff; position: sticky; top: 0; z-index: 5;
+  }
+  .bar { max-width: 960px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px; }
+  .bar .title { font-weight: 600; }
+  .bar .section-name { color: #c6d0e0; }
+  .bar .spacer { flex: 1; }
+
+  main { max-width: 960px; margin: 28px auto 80px; padding: 0 24px; }
+  .sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 32px 40px; }
+  h1 { font-size: 28px; margin: 0 0 6px; font-weight: 700; }
+  h2 { font-size: 22px; margin: 0 0 16px; font-weight: 700; }
+  p.lead { color: var(--ink-soft); margin: 0 0 20px; }
+
+  .instructions ol { padding-left: 22px; }
+  .instructions li { margin-bottom: 6px; }
+  .plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0 28px; }
+  .plan div { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .plan strong { display: block; margin-bottom: 4px; }
+  .plan span { color: var(--ink-soft); font-size: 15px; }
+
+  button.primary {
+    background: var(--pitch); color: #fff; border: 0; border-radius: 6px; font-size: 17px; font-weight: 600;
+    padding: 12px 26px; cursor: pointer; font-family: inherit;
+  }
+  button.primary:hover { background: var(--pitch-deep); }
+  button.primary:focus-visible, .option:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+  /* passage + questions */
+  .two-col { display: grid; grid-template-columns: 5fr 6fr; gap: 40px; align-items: start; }
+  .passage { position: sticky; top: 76px; }
+  .passage-note { margin: 0 0 14px; font-style: italic; color: var(--ink-soft); }
+
+  .question { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .question:last-of-type { border-bottom: 0; }
+  .qhead { display: flex; gap: 12px; align-items: baseline; margin-bottom: 12px; }
+  .qnum { font-weight: 700; min-width: 26px; }
+  .stem { margin: 0; }
+  .stem em.speaker { font-style: normal; font-weight: 600; }
+  .stem .facts { margin: 8px 0 0 0; padding-left: 20px; }
+  .stem .facts li { margin: 2px 0; }
+  .stem .quote { margin: 10px 0 0 0; padding: 10px 14px; background: var(--field); border-left: 3px solid var(--line); border-radius: 0 4px 4px 0; }
+  .options { display: grid; gap: 8px; margin: 14px 0 0 38px; }
+  .option {
+    display: flex; gap: 14px; align-items: flex-start; text-align: left; width: 100%;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px;
+    cursor: pointer; font: inherit; color: inherit;
+  }
+  .option:hover { border-color: var(--ink-soft); }
+  .option .letter { flex: 0 0 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ink);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .option.selected { border-color: var(--ink); background: #eef2f8; }
+  .option.selected .letter { background: var(--ink); color: #fff; }
+
+  .submit-row { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .submit-row .status { color: var(--ink-soft); font-size: 15px; }
+
+
+  /* prose passage */
+  .prose { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.6; }
+  .prose h3 { font-family: inherit; font-size: 22px; margin: 0 0 14px; font-weight: 700; }
+  .prose p { margin: 0 0 12px; }
+  .passage { max-height: calc(100vh - 100px); overflow-y: auto; padding-right: 8px; }
+
+
+  /* poem passage */
+  .poem { font-size: 17px; line-height: 1.6; }
+  .poem .stanza { margin: 0 0 18px; position: relative; padding-left: 32px; }
+  .poem .stanza .vn { position: absolute; left: 0; top: 1px; font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px; color: var(--ink-soft); }
+  .poem .stanza .line { display: block; }
+
+
+
+  /* letter-only options and shared option lists */
+  .options.letters { grid-template-columns: repeat(5, 54px); gap: 10px; }
+  .options.letters .option { justify-content: center; padding: 9px; }
+  .choice-list { border: 1px solid var(--line); border-radius: 6px; padding: 14px 18px; margin: 0 0 26px; }
+  .choice-list ol { list-style: none; margin: 0; padding: 0; }
+  .choice-list li { display: flex; gap: 12px; margin-bottom: 8px; }
+  .choice-list li:last-child { margin-bottom: 0; }
+  .choice-list .letter { flex: 0 0 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ink);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+
+
+  /* multi-extract passage */
+  .extract { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 6px; }
+  .extract h4 { font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; margin: 0 0 6px; letter-spacing: .02em; }
+  .extract p { margin: 0; font-size: 16px; line-height: 1.55; }
+  .options.letters.four { grid-template-columns: repeat(4, 54px); }
+
+  /* cloze gaps */
+  .gap { color: var(--ink-soft); }
+  .gap.filled { color: var(--ink); font-weight: 600; background: #eef2f8; box-shadow: inset 0 -2px 0 var(--pitch); }
+  .gap.filled.correct { color: var(--correct); background: var(--correct-bg); box-shadow: inset 0 -2px 0 var(--correct); }
+
+  /* data tables inside stems */
+  table.grid { border-collapse: collapse; margin: 10px 0 0; font-size: 16px; }
+  table.grid th, table.grid td { border: 1px solid var(--ink); padding: 5px 14px; text-align: left; }
+  table.grid th { background: var(--field); font-weight: 600; }
+
+  /* visual (picture) options */
+  .options.visual { grid-template-columns: repeat(auto-fit, minmax(0, max-content)); gap: 14px; }
+  .options.visual .option { flex-direction: column; align-items: center; gap: 8px; padding: 10px; }
+  .options.visual .option .letter { flex: none; width: 28px; height: 28px; }
+  .options.visual .option svg { display: block; }
+  @media (max-width: 760px) { .options.visual { grid-template-columns: repeat(2, max-content); } }
+
+
+  /* v7 additions */
+  .stem .note { margin: 0 0 8px; font-style: italic; color: var(--ink-soft); font-size: 15px; }
+  .stem ol.statements { margin: 10px 0 0; padding-left: 26px; }
+  .stem ol.statements li { margin: 4px 0; padding-left: 4px; }
+  .figure { margin: 12px 0; }
+  .figure svg { display: block; max-width: 100%; height: auto; }
+  .option svg { display: block; max-width: 100%; height: auto; }
+  .option:has(svg) { align-items: center; }
+  .digit-cards { display: flex; gap: 22px; flex-wrap: wrap; margin: 12px 0 14px; }
+  .digit-card { width: 80px; height: 106px; border: 1.5px solid var(--ink); border-radius: 10px; background: #fdf3e1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .digit-card span { font-size: 56px; font-weight: 700; line-height: 1; }
+  .digit-card small { font-size: 12px; margin-top: 6px; letter-spacing: .03em; }
+  .table-wrap { overflow-x: auto; max-width: 100%; }
+  @media (max-width: 760px) { table.grid th, table.grid td { padding: 4px 8px; font-size: 14px; } }
+  .poem .stanza .line { padding-left: 1.2em; text-indent: -1.2em; }
+  .tags { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0 14px; }
+  .tag { border: 1.5px solid var(--ink); border-radius: 8px 22px 22px 8px; padding: 8px 22px 8px 14px; background: #fdf3e1;
+    display: flex; flex-direction: column; min-width: 96px; }
+  .tag small { font-size: 13px; color: var(--ink-soft); }
+  .tag span { font-size: 22px; font-weight: 700; }
+  .hrow { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 22px; margin: 14px 0 16px; }
+  .hnum { display: inline-flex; gap: 3px; }
+  .hnum .dig, .hnum .hid { width: 30px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+    border: 2px solid var(--ink); border-radius: 5px; font-size: 22px; font-weight: 700; background: #fff; }
+  .hnum .hid { background: var(--ink); color: #fff; font-size: 18px; }
+  .hnum .hid.sq { color: #f2c14e; }
+  .hnum .hid.tri { color: #8fd3c7; }
+  .explain .skill { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--ink-soft); }
+
+  /* review */
+  .result-line { display: flex; gap: 10px; align-items: center; font-weight: 600; margin-bottom: 10px; }
+  .badge { padding: 2px 10px; border-radius: 4px; font-size: 14px; }
+  .badge.ok { background: var(--correct-bg); color: var(--correct); }
+  .badge.no { background: var(--wrong-bg); color: var(--wrong); }
+  .option.is-correct { border-color: var(--correct); background: var(--correct-bg); }
+  .option.is-correct .letter { border-color: var(--correct); background: var(--correct); color: #fff; }
+  .option.is-wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.is-wrong .letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+  .option[disabled] { cursor: default; }
+  .explain { margin: 14px 0 0 38px; padding: 14px 16px; background: var(--field); border-radius: 6px; font-size: 16px; }
+  .explain p { margin: 0 0 8px; }
+  .explain p:last-child { margin: 0; }
+  .explain .why-not { color: var(--ink-soft); }
+
+  .section-score { font-size: 18px; margin: 0 0 24px; }
+  .section-score b { font-size: 26px; }
+
+  /* final */
+  .final-score { text-align: center; padding: 20px 0 10px; }
+  .final-score .big { font-size: 64px; font-weight: 700; line-height: 1; }
+  .final-score .of { color: var(--ink-soft); font-size: 20px; }
+  .breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 26px 0 30px; }
+  .breakdown div { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .breakdown strong { display: block; font-size: 24px; }
+  .breakdown span { color: var(--ink-soft); font-size: 15px; }
+  .verdict { margin: 0 0 24px; }
+  .center { text-align: center; }
+
+  @media (max-width: 760px) {
+    .two-col { grid-template-columns: 1fr; }
+    .passage { position: static; }
+    .plan, .breakdown { grid-template-columns: 1fr; }
+    .sheet { padding: 22px; }
+    .options, .explain { margin-left: 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .option { transition: background .12s, border-color .12s; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <span class="title">Practice Test 13</span>
+    <span class="section-name" id="hdr-section"></span>
+    <span class="spacer"></span>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* ---------------------------------------------------------------
+   TEST CONTENT — Practice Test 13
+   --------------------------------------------------------------- */
+
+let passMode = "answer";
+const INK = "#1b2a41";
+
+/* ---- Reading: sentence insertion ---- */
+const ARTICLE_TEXT = `
+<p>For almost nine years, the people of Sydney watched their harbour bridge grow. {1} Instead, the builders started the great steel arch from both shores at once, so that two halves reached out towards each other across the water.</p>
+<p>While the two halves were unfinished, nothing was holding them up from below. {2} As each half grew longer, the cables were let out little by little, slowly lowering the two ends towards each other.</p>
+<p>In August 1930 the two halves finally touched in the middle. {3} The bridge was opened in March 1932, when a man on horseback surprised everyone by slashing the ribbon with a sword before the official ceremony could take place.</p>`;
+
+const SENT_LETTERS = ["A", "B", "C", "D", "E"];
+const SENTENCES = [
+  "Ferries had carried people across the harbour for almost a hundred years before the bridge was built.",
+  "Each half was held back by huge steel cables, anchored in tunnels dug into the rock behind it.",
+  "The harbour was too deep and busy for the arch to be built up from the water.",
+  "This meant the two halves had to be built at exactly the same speed.",
+  "Only then could the deck for the road and the railway be hung beneath the arch."
+];
+
+function articleHtml() {
+  const si = SECTIONS.findIndex(s => s.id === "reading");
+  let t = ARTICLE_TEXT;
+  SECTIONS[si].questions.forEach((q, i) => {
+    const chosen = responses[si][i];
+    let fill;
+    if (passMode === "review") fill = `<span class="gap filled correct">(${i + 1}) ${SENTENCES[q.answer]}</span>`;
+    else if (chosen !== null) fill = `<span class="gap filled">(${i + 1}) ${SENTENCES[chosen]}</span>`;
+    else fill = `<span class="gap">(${i + 1}) …………</span>`;
+    t = t.replace(`{${i + 1}}`, fill);
+  });
+  return t;
+}
+
+const PASSAGE = {
+  title: "Building the Coathanger",
+  note: "Three sentences have been removed from the text below. There are two extra sentences you do not need to use.",
+  html: articleHtml
+};
+
+/* ---- Thinking Skills Q3: street map ---- */
+const MAP_SVG = (() => {
+  const u = 50, ox = 30, oy = 30, W = 6, H = 5;
+  const P = (x, y) => [ox + x * u, oy + (H - y) * u];
+  let g = "";
+  for (let x = 0; x <= W; x++) { const [a, b] = P(x, 0), [c, d] = P(x, H); g += `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#c9d4e3" stroke-width="7" stroke-linecap="round"/>`; }
+  for (let y = 0; y <= H; y++) { const [a, b] = P(0, y), [c, d] = P(W, y); g += `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#c9d4e3" stroke-width="7" stroke-linecap="round"/>`; }
+  const place = (x, y, name, fill) => { const [cx, cy] = P(x, y);
+    return `<circle cx="${cx}" cy="${cy}" r="9" fill="${fill}" stroke="${INK}" stroke-width="2"/>
+            <text x="${cx + 13}" y="${cy - 10}" font-size="13" font-weight="600" fill="${INK}">${name}</text>`; };
+  g += place(1, 2, "Pool", "#8fb3d9") + place(5, 4, "Park", "#a8cfa3") + place(5, 2, "Shops", "#f2c14e") + place(1, 4, "School", "#d9a3c7");
+  const [hx, hy] = P(3, 0);
+  g += `<rect x="${hx - 10}" y="${hy - 10}" width="20" height="20" fill="${INK}"/><text x="${hx + 14}" y="${hy + 18}" font-size="13" font-weight="600" fill="${INK}">Home</text>`;
+  const cx = ox + W * u + 40, cy = oy + 30;
+  g += `<g transform="translate(${cx} ${cy})"><line x1="0" y1="18" x2="0" y2="-14" stroke="${INK}" stroke-width="2.5"/>
+        <polygon points="0,-22 -7,-10 7,-10" fill="${INK}"/><text x="0" y="36" font-size="14" font-weight="700" text-anchor="middle" fill="${INK}">N</text></g>`;
+  return `<svg viewBox="0 0 ${ox + W * u + 70} ${oy + H * u + 36}" width="${ox + W * u + 70}" height="${oy + H * u + 36}" role="img" aria-label="A street map made of a grid of streets. Home is on the bottom street. The Pool, Park, Shops and School are at street corners.">${g}</svg>`;
+})();
+
+/* ---- Maths Q2: pictograph ---- */
+const BOOK = (x, y, half) => {
+  const w = half ? 11 : 22;
+  return `<g transform="translate(${x} ${y})"><rect x="0" y="0" width="${w}" height="26" rx="${half ? 1 : 3}" fill="#c9485b" stroke="${INK}" stroke-width="1.5"/>
+    ${half ? "" : `<line x1="11" y1="2" x2="11" y2="24" stroke="${INK}" stroke-width="1.2"/>`}</g>`;
+};
+const PICTO = (() => {
+  const days = [["Monday", 3.5], ["Tuesday", 2], ["Wednesday", 4.5], ["Thursday", 1.5], ["Friday", 3]];
+  let g = "";
+  days.forEach(([d, n], r) => {
+    const y = 12 + r * 38;
+    g += `<text x="0" y="${y + 18}" font-size="14" fill="${INK}">${d}</text>`;
+    for (let i = 0; i < Math.floor(n); i++) g += BOOK(100 + i * 30, y, false);
+    if (n % 1) g += BOOK(100 + Math.floor(n) * 30, y, true);
+  });
+  g += `<line x1="92" y1="4" x2="92" y2="${12 + 5 * 38 - 6}" stroke="#9aa7bb" stroke-width="1"/>
+        <g transform="translate(0 ${12 + 5 * 38 + 10})">${BOOK(0, 0, false)}<text x="30" y="18" font-size="14" fill="${INK}">= 4 books</text>
+        ${BOOK(130, 0, true)}<text x="148" y="18" font-size="14" fill="${INK}">= 2 books</text></g>`;
+  return `<svg viewBox="0 0 280 ${12 + 5 * 38 + 44}" width="280" height="${12 + 5 * 38 + 44}" role="img" aria-label="Pictograph of books borrowed. Monday 3 and a half pictures, Tuesday 2, Wednesday 4 and a half, Thursday 1 and a half, Friday 3. Each whole picture means 4 books and each half picture means 2 books.">${g}</svg>`;
+})();
+
+const SECTIONS = [
+  {
+    id: "reading",
+    name: "Reading",
+    passage: PASSAGE,
+    intro: "Three sentences have been removed from the text. Choose from the sentences (A – E) the one which fits each gap. There are two extra sentences you do not need to use.",
+    preamble: `<div class="choice-list"><ol>${SENTENCES.map((t, i) =>
+      `<li><span class="letter">${SENT_LETTERS[i]}</span><span>${t}</span></li>`).join("")}</ol></div>`,
+    questions: [
+      {
+        stem: "Which sentence fits <b>gap 1</b>?",
+        letterOptions: true,
+        options: SENTENCES,
+        answer: 2,
+        skill: "using a linking word to find the missing sentence",
+        explain: `<p>The sentence after the gap begins with “Instead”, so the gap must describe a way of building that was <em>not</em> used. Sentence C does exactly that: the harbour was too deep and busy to build the arch up from the water, so, instead, it was built out from both shores.</p>
+                  <p class="why-not">A is about ferries. It is true to the topic, but nothing after the gap follows from it, and “Instead” makes no sense after it. D starts with “This meant…”, but at this point nothing has been said for “this” to point back to.</p>`
+      },
+      {
+        stem: "Which sentence fits <b>gap 2</b>?",
+        letterOptions: true,
+        options: SENTENCES,
+        answer: 1,
+        skill: "tracking what a phrase like “the cables” refers back to",
+        explain: `<p>The next sentence talks about “<em>the</em> cables” being let out, which means the cables must already have been mentioned. B introduces them: each half was held back by huge steel cables. It also answers the problem in the sentence before the gap, that nothing was holding the halves up from below.</p>
+                  <p class="why-not">D is the trap. It sounds sensible for a bridge built from both sides, but after it, “the cables” would appear from nowhere. Always check the sentence <em>after</em> the gap as carefully as the one before it.</p>`
+      },
+      {
+        stem: "Which sentence fits <b>gap 3</b>?",
+        letterOptions: true,
+        options: SENTENCES,
+        answer: 4,
+        skill: "following the order of events",
+        explain: `<p>The paragraph runs in time order: the halves touch in 1930, then the bridge opens in 1932. Something must happen in between, and E supplies it: “Only then”, once the arch was joined, could the road and railway deck be hung beneath it.</p>
+                  <p class="why-not">A and D are the two sentences that are never used. A would break the time order by jumping back a hundred years, and D is about the building stage, which is already over by 1930.</p>`
+      }
+    ]
+  },
+  {
+    id: "thinking",
+    name: "Thinking Skills",
+    intro: "Choose the one correct answer (A, B, C or D).",
+    questions: [
+      {
+        stem: `<p class="quote" style="margin-top:0">Every student who scores full marks in the spelling test gets a gold star.</p>
+               <p style="margin:10px 0 0"><em class="speaker">Zoe:</em> “Kai got a gold star, so he must have scored full marks in the spelling test.”</p>
+               <p style="margin:6px 0 0"><em class="speaker">Liam:</em> “Ava didn’t get a gold star, so she can’t have scored full marks in the spelling test.”</p>
+               <p style="margin:10px 0 0">If the information in the box is true, whose reasoning is correct?</p>`,
+        options: ["Zoe only", "Liam only", "Both Zoe and Liam", "Neither Zoe nor Liam"],
+        answer: 1,
+        skill: "deciding whether a conclusion must follow",
+        explain: `<p>The rule says full marks always leads to a gold star. So if Ava didn’t get a gold star, she can’t have scored full marks, because if she had, she would have got one. Liam is correct.</p>
+                  <p class="why-not">Zoe runs the rule backwards. The rule never says that full marks is the <em>only</em> way to get a gold star. Kai might have got his for good behaviour or a great story, so we can’t be sure he scored full marks.</p>`
+      },
+      {
+        stem: `Three days after tomorrow will be a Saturday.
+               <p style="margin:10px 0 0">What day was it yesterday?</p>`,
+        options: ["Sunday", "Monday", "Tuesday", "Wednesday"],
+        answer: 1,
+        skill: "counting forwards and backwards through the days",
+        explain: `<p>Work backwards from Saturday. Three days before Saturday is Wednesday, so tomorrow is Wednesday. That makes today Tuesday, and yesterday Monday.</p>
+                  <p class="why-not">Tuesday (C) is today, not yesterday. Wednesday (D) is tomorrow. Sunday (A) comes from counting one day too many, as if Saturday were four days after tomorrow.</p>`
+      },
+      {
+        stem: `Jess leaves home and walks 3 blocks north. She turns right and walks 2 blocks, then turns right again and walks 1 block.
+               <div class="figure">${MAP_SVG}</div>
+               <p style="margin:0">Where is Jess now?</p>`,
+        options: ["at the Pool", "at the Park", "at the Shops", "at the School"],
+        answer: 2,
+        skill: "following directions on a map",
+        explain: `<p>From Home, 3 blocks north takes Jess 3 streets up. She is facing north, so turning right means she now faces east (to the right on the map), and she walks 2 blocks that way. Turning right again from east makes her face south, so she walks 1 block down, to the Shops.</p>
+                  <p class="why-not">The Park (B) comes from turning left at the second corner instead of right. The School (D) comes from turning left at the first corner. The Pool (A) comes from turning left both times. Imagine yourself walking along the street, facing the way Jess faces, to work out which way is right.</p>`
+      }
+    ]
+  },
+  {
+    id: "maths",
+    name: "Mathematical Reasoning",
+    intro: "Choose the one correct answer (A, B, C, D or E). No calculators.",
+    questions: [
+      {
+        stem: `Tom spent one quarter of his money on a book. Then he spent one third of the money he had left on lunch. He now has $12.
+               <p style="margin:10px 0 0">How much money did Tom have to start with?</p>`,
+        options: ["$16", "$18", "$24", "$36", "$48"],
+        answer: 2,
+        skill: "working backwards through fractions",
+        explain: `<p>Work backwards. Lunch used one third of what was left after the book, so the $12 is the other two thirds. One third is $6, and he had $18 before lunch. The book used one quarter of his money, so $18 is three quarters of what he started with. One quarter is $6, so he started with $24.</p>
+                  <p class="why-not">$18 (B) stops after undoing lunch. $16 (A) only undoes the book, using $12 as three quarters. $36 (D) and $48 (E) come from multiplying $12 by 3 or 4 instead of undoing the fractions step by step.</p>`
+      },
+      {
+        stem: `The pictograph shows how many books were borrowed from a school library each day.
+               <div class="figure">${PICTO}</div>
+               <p style="margin:0">How many more books were borrowed on the busiest day than on the quietest day?</p>`,
+        options: ["3", "6", "12", "18", "24"],
+        answer: 2,
+        skill: "reading a pictograph with a key",
+        explain: `<p>Use the key: a whole picture is 4 books and a half picture is 2 books. Wednesday is the busiest day, with 4½ pictures: 4 × 4 + 2 = 18 books. Thursday is the quietest, with 1½ pictures: 4 + 2 = 6 books. The difference is 18 − 6 = 12 books.</p>
+                  <p class="why-not">3 (A) counts pictures instead of books (4½ − 1½). 6 (B) treats each picture as 2 books. 18 (D) is Wednesday on its own, and 24 (E) adds the two days together.</p>`
+      },
+      {
+        stem: `In each of these numbers, the digit 6 is changed to a 7.
+               <p style="margin:10px 0 0">Which number increases the most?</p>`,
+        options: ["60 518", "16 002", "3 609", "24 561", "99 996"],
+        answer: 0,
+        skill: "place value",
+        explain: `<p>Changing a 6 to a 7 adds 1 to that place, so what matters is <em>where</em> the 6 is. In 60 518 the 6 is in the ten thousands place, so the number goes up by 10 000. In 16 002 it goes up by 1000, in 3 609 by 100, in 24 561 by 10, and in 99 996 by only 1.</p>
+                  <p class="why-not">99 996 (E) is the trap. It is the biggest number, but its 6 is in the ones place, so it increases the least. The size of the number doesn’t matter, only the place of the digit.</p>`
+      }
+    ]
+  }
+];
+
+
+const LETTERS = ["A", "B", "C", "D", "E"];
+const app = document.getElementById("app");
+const hdrSection = document.getElementById("hdr-section");
+let responses = SECTIONS.map(s => s.questions.map(() => null));
+let current = 0;
+
+function showStart() {
+  hdrSection.textContent = "";
+  app.innerHTML = `
+    <div class="sheet instructions">
+      <h1>Practice paper 13</h1>
+      <p class="lead">Three short sections: reading, thinking skills and maths.</p>
+      <div class="plan">
+        ${SECTIONS.map(s => `<div><strong>${s.name}</strong><span>${s.questions.length} questions</span></div>`).join("")}
+      </div>
+      <ol>
+        <li>Take as long as you need — there is no time limit.</li>
+        <li>Answer all three questions in a section, then press <strong>Submit answers</strong> to see how you went.</li>
+        <li>You don’t lose marks for wrong answers, so attempt every question.</li>
+        <li>Your overall mark out of 9 is shown at the end.</li>
+      </ol>
+      <button class="primary" id="start">Start the reading section</button>
+    </div>`;
+  document.getElementById("start").onclick = () => { current = 0; responses = SECTIONS.map(s => s.questions.map(() => null)); showSection(); };
+}
+
+function renderPassage(pass) {
+  return `<div class="passage">
+    <p class="passage-note">${pass.note}</p>
+    <div class="prose"><h3>${pass.title}</h3><div id="passage-body">${typeof pass.html === "function" ? pass.html() : pass.html}</div></div>
+  </div>`;
+}
+
+function refreshPassage() {
+  const pass = SECTIONS[current].passage;
+  const el = document.getElementById("passage-body");
+  if (el && pass && typeof pass.html === "function") el.innerHTML = pass.html();
+}
+
+function renderQuestions(section, mode) {
+  return section.questions.map((q, qi) => {
+    const chosen = responses[current][qi];
+    const opts = q.options.map((o, oi) => {
+      let cls = "option";
+      if (mode === "answer" && chosen === oi) cls += " selected";
+      if (mode === "review") {
+        if (oi === q.answer) cls += " is-correct";
+        else if (chosen === oi) cls += " is-wrong";
+      }
+      return `<button type="button" class="${cls}" data-q="${qi}" data-o="${oi}" ${mode === "review" ? "disabled" : ""}>
+                <span class="letter">${LETTERS[oi]}</span>${q.letterOptions ? "" : `<span>${o}</span>`}</button>`;
+    }).join("");
+    const optCls = q.visualOptions ? "options visual" : (q.letterOptions ? "options letters" : "options");
+    let result = "";
+    if (mode === "review") {
+      const right = chosen === q.answer;
+      const label = chosen === null ? "Not answered" : (right ? "Correct" : "Incorrect");
+      result = `<div class="result-line"><span class="badge ${right ? "ok" : "no"}">${label}</span>
+                <span>Correct answer: ${LETTERS[q.answer]}${chosen !== null && !right ? ` · You chose ${LETTERS[chosen]}` : ""}</span></div>`;
+    }
+    return `<div class="question">
+      <div class="qhead"><span class="qnum">${qi + 1}</span><div class="stem">${q.stem}</div></div>
+      ${result}
+      <div class="${optCls}">${opts}</div>
+      ${mode === "review" ? `<div class="explain">${q.skill ? `<p class="skill">Skill tested: ${q.skill}</p>` : ""}${q.explain}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function showSection() {
+  passMode = "answer";
+  const s = SECTIONS[current];
+  hdrSection.textContent = `${s.name} · Section ${current + 1} of ${SECTIONS.length}`;
+  const qs = `<div>
+      <h2>${s.name}</h2>
+      <p class="lead">${s.intro}</p>
+      ${s.preamble || ""}
+      ${renderQuestions(s, "answer")}
+      <div class="submit-row">
+        <button class="primary" id="submit">Submit answers</button>
+        <span class="status" id="status"></span>
+      </div>
+    </div>`;
+  app.innerHTML = `<div class="sheet">${s.passage ? `<div class="two-col">${renderPassage(s.passage)}${qs}</div>` : qs}</div>`;
+
+  app.querySelectorAll(".option").forEach(btn => {
+    btn.onclick = () => {
+      const qi = +btn.dataset.q, oi = +btn.dataset.o;
+      responses[current][qi] = oi;
+      app.querySelectorAll(`.option[data-q="${qi}"]`).forEach(b => b.classList.toggle("selected", +b.dataset.o === oi));
+      refreshPassage();
+      updateStatus();
+    };
+  });
+  document.getElementById("submit").onclick = () => {
+    const unanswered = responses[current].filter(r => r === null).length;
+    if (unanswered && !confirm(`You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Submit anyway?`)) return;
+    showReview();
+  };
+  updateStatus();
+  window.scrollTo(0, 0);
+}
+
+function updateStatus() {
+  const done = responses[current].filter(r => r !== null).length;
+  const el = document.getElementById("status");
+  if (el) el.textContent = `${done} of ${SECTIONS[current].questions.length} answered`;
+}
+
+function sectionScore(i) {
+  return SECTIONS[i].questions.reduce((n, q, qi) => n + (responses[i][qi] === q.answer ? 1 : 0), 0);
+}
+
+function showReview() {
+  passMode = "review";
+  const s = SECTIONS[current];
+  const score = sectionScore(current);
+  const last = current === SECTIONS.length - 1;
+  hdrSection.textContent = `${s.name} · Review`;
+  const body = `<div>
+      <h2>${s.name} — review</h2>
+      <p class="section-score">You scored <b>${score}</b> out of ${s.questions.length}</p>
+      ${s.preamble || ""}
+      ${renderQuestions(s, "review")}
+      <div class="submit-row">
+        <button class="primary" id="next">${last ? "See your overall mark" : `Start the ${SECTIONS[current + 1].name.split(" — ")[0].toLowerCase()} section`}</button>
+      </div>
+    </div>`;
+  app.innerHTML = `<div class="sheet">${s.passage ? `<div class="two-col">${renderPassage(s.passage)}${body}</div>` : body}</div>`;
+  document.getElementById("next").onclick = () => { if (last) showFinal(); else { current++; showSection(); } };
+  window.scrollTo(0, 0);
+}
+
+function showFinal() {
+  hdrSection.textContent = "Results";
+  const total = SECTIONS.reduce((n, _, i) => n + sectionScore(i), 0);
+  const max = SECTIONS.reduce((n, s) => n + s.questions.length, 0);
+  let verdict;
+  if (total === max) verdict = "Full marks. Every question right, across all three sections.";
+  else if (total >= 7) verdict = "A strong result. Look back at the questions you missed — the explanations show exactly where the trap was.";
+  else if (total >= 5) verdict = "A solid attempt. The sections where you dropped marks are the ones to practise next.";
+  else verdict = "A good start. Re-read the explanations for each section, then try the paper again.";
+  app.innerHTML = `
+    <div class="sheet">
+      <div class="final-score"><div class="big">${total}</div><div class="of">out of ${max}</div></div>
+      <div class="breakdown">
+        ${SECTIONS.map((s, i) => `<div><strong>${sectionScore(i)} / ${s.questions.length}</strong><span>${s.name}</span></div>`).join("")}
+      </div>
+      <p class="verdict center">${verdict}</p>
+      <div class="center"><button class="primary" id="again">Try the paper again</button></div>
+    </div>`;
+  document.getElementById("again").onclick = showStart;
+  window.scrollTo(0, 0);
+}
+
+
+showStart();
+</script>
+</body>
+</html>
